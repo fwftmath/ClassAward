@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>2026 年度4D班頒獎典禮 </title>
+    <title>2026 年度4D班頒獎典禮</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,8 +47,8 @@
         
         .grid { display: grid; grid-template-columns: 380px 1fr; gap: 60px; align-items: center; }
         
-        /* 懸念核心：神祕盾牌 */
-        .img-stage { width: 350px; height: 350px; position: relative; }
+        /* 懸念核心：神祕盾牌與特效容器 */
+        .img-stage { width: 350px; height: 350px; position: relative; display: flex; justify-content: center; align-items: center; }
         
         .mystery-mask { 
             position: absolute; 
@@ -68,7 +68,38 @@
         .mystery-mask i { font-size: 110px; color: var(--color); text-shadow: 0 0 20px var(--color); margin-bottom: 10px; }
         .mystery-mask span { font-size: 18px; color: #64748b; letter-spacing: 2px; text-transform: uppercase; }
         
-        /* 獲獎照片（初始隱藏） */
+        /* ============ 【全新加入】相片出場震撼舞台特效 ============ */
+        
+        /* 1. 後方核心放射光暈 */
+        .ray-glow {
+            position: absolute; width: 120%; height: 120%;
+            background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+            border-radius: 50%; z-index: 1; opacity: 0; transform: scale(0.5);
+            transition: all 1s ease; pointer-events: none;
+        }
+        
+        /* 2. 瞬間炸裂擴散的圓形衝擊波 */
+        .shockwave {
+            position: absolute; width: 100%; height: 100%;
+            border: 4px solid var(--color); border-radius: 50%;
+            z-index: 3; opacity: 0; transform: scale(1);
+            pointer-events: none;
+        }
+
+        /* 3. 周邊飄浮發光粒子結構 */
+        .particles {
+            position: absolute; width: 140%; height: 140%;
+            border-radius: 50%; z-index: 2; opacity: 0;
+            background-image: 
+                radial-gradient(circle, var(--color) 2px, transparent 3px),
+                radial-gradient(circle, #ffffff 1.5px, transparent 2.5px),
+                radial-gradient(circle, var(--color) 3px, transparent 4px);
+            background-size: 20% 20%, 30% 30%, 25% 25%;
+            background-position: 10% 10%, 50% 20%, 80% 40%;
+            transition: all 1.2s ease; pointer-events: none;
+        }
+        
+        /* 4. 獲獎照片基礎樣式與 3D 預備姿態 */
         .photo { 
             width: 350px; 
             height: 350px; 
@@ -76,13 +107,43 @@
             border: 8px solid var(--color); 
             object-fit: cover; 
             opacity: 0; 
-            transform: scale(0.4) rotate(-45deg); 
+            z-index: 4;
+            transform: scale(0.3) rotate(-90deg); 
             transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
         
-        /* 【第三階段：揭曉得主】特效觸發 */
+        /* 【第三階段觸發】動態啟動開關 */
         .reveal-winner .mystery-mask { transform: scale(0) rotate(360deg); opacity: 0; }
-        .reveal-winner .photo { opacity: 1; transform: scale(1) rotate(0deg); box-shadow: 0 0 50px var(--color), 0 0 100px rgba(255,255,255,0.2); }
+        
+        .reveal-winner .photo { 
+            opacity: 1; 
+            transform: scale(1) rotate(0deg); 
+            box-shadow: 0 0 50px var(--color), 0 0 100px rgba(255,255,255,0.3);
+            animation: photoPulse 2s infinite alternate 0.8s;
+        }
+        .reveal-winner .ray-glow { opacity: 1; transform: scale(1); animation: rotateGlow 15s linear infinite; }
+        .reveal-winner .particles { opacity: 0.8; transform: scale(1.1); animation: floatParticles 8s linear infinite; }
+        .reveal-winner .shockwave { animation: shockwaveExplode 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
+        
+        /* 特效關鍵影格動畫庫 */
+        @keyframes shockwaveExplode {
+            0% { transform: scale(0.9); opacity: 1; border-width: 10px; }
+            100% { transform: scale(1.6); opacity: 0; border-width: 1px; }
+        }
+        @keyframes photoPulse {
+            0% { box-shadow: 0 0 40px var(--color); transform: scale(1); }
+            100% { box-shadow: 0 0 70px var(--color), 0 0 120px rgba(255,255,255,0.5); transform: scale(1.03); }
+        }
+        @keyframes rotateGlow {
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes floatParticles {
+            0% { background-position: 10% 10%, 50% 20%, 80% 40%; }
+            50% { background-position: 15% 30%, 40% 10%, 85% 50%; }
+            100% { background-position: 10% 10%, 50% 20%, 80% 40%; }
+        }
+        
+        /* ======================================================== */
         
         /* 右側獲獎者資訊 */
         .winner-info { display: flex; flex-direction: column; }
@@ -157,6 +218,9 @@
         <div class="grid">
             <div class="img-stage">
                 <div class="mystery-mask"><i class="fa-solid fa-handshake-angle"></i><span>Devotion</span></div>
+                <div class="ray-glow"></div>
+                <div class="particles"></div>
+                <div class="shockwave"></div>
                 <img class="photo" src="./01.jpg">
             </div>
             <div class="winner-info">
@@ -177,6 +241,9 @@
         <div class="grid">
             <div class="img-stage">
                 <div class="mystery-mask"><i class="fa-solid fa-fire"></i><span>Sportsmanship</span></div>
+                <div class="ray-glow"></div>
+                <div class="particles"></div>
+                <div class="shockwave"></div>
                 <img class="photo" src="./02.jpg">
             </div>
             <div class="winner-info">
@@ -193,10 +260,13 @@
         <div class="title">環保大使獎
            <p style="font-size: 32px; color:#aa99cc;">綠色生活嘉許</p>
            <p style="font-size: 24px; color:#99aacc;">表揚平時主動回收、隨手關冷氣與電燈、</p> <p style="font-size: 24px; color:#99aacc;">自備水樽並落實垃圾分類的同學。你是校園永續發展的最佳實踐者。</p>
-</div>
+        </div>
         <div class="grid">
             <div class="img-stage">
                 <div class="mystery-mask"><i class="fa-solid fa-earth-asia"></i><span>Eco Ambassador</span></div>
+                <div class="ray-glow"></div>
+                <div class="particles"></div>
+                <div class="shockwave"></div>
                 <img class="photo" src="./03.jpg">
             </div>
             <div class="winner-info">
@@ -213,10 +283,13 @@
         <div class="title">金螺絲獎
            <p style="font-size: 32px; color:#aa99cc;">可靠後勤嘉許</p>
            <p style="font-size: 24px; color:#99aacc;">表揚主動協助製作壁報、活動拍照、分派物資</p> <p style="font-size: 24px; color:#99aacc;">及整理課室黑板的後勤尖兵。你如同堅固的螺絲，支撐著全班的順暢運作。</p>
-</div>
+        </div>
         <div class="grid">
             <div class="img-stage">
                 <div class="mystery-mask"><i class="fa-solid fa-screwdriver-wrench"></i><span>The Screw</span></div>
+                <div class="ray-glow"></div>
+                <div class="particles"></div>
+                <div class="shockwave"></div>
                 <img class="photo" src="./04.jpg">
             </div>
             <div class="winner-info">
@@ -232,10 +305,13 @@
     <div class="slide theme5" data-type="award">
         <div class="title">磐石獎
            <p style="font-size: 24px; color:#99aacc;">表揚全年從不遲到、缺課、早退的同學。</p> <p style="font-size: 24px; color:#99aacc;">這份低調但極度自律的表現，如磐石般穩定可靠，是所有人學習的楷模。</p>
-</div>
+        </div>
         <div class="grid">
             <div class="img-stage">
                 <div class="mystery-mask"><i class="fa-solid fa-mountain"></i><span>The Rock</span></div>
+                <div class="ray-glow"></div>
+                <div class="particles"></div>
+                <div class="shockwave"></div>
                 <img class="photo" src="./05.jpg">
             </div>
             <div class="winner-info">
@@ -251,10 +327,13 @@
     <div class="slide theme6" data-type="award">
         <div class="title">暖男獎
            <p style="font-size: 24px; color:#99aacc;">表揚熱心助人的男同學：主動指導功課、大方分享筆記，</p> <p style="font-size: 24px; color:#99aacc;">並在同學遇到挫折時，給予安靜的陪伴與耐心的傾聽。</p>
-</div>
+        </div>
         <div class="grid">
             <div class="img-stage">
                 <div class="mystery-mask"><i class="fa-solid fa-sun"></i><span>Warm Guy</span></div>
+                <div class="ray-glow"></div>
+                <div class="particles"></div>
+                <div class="shockwave"></div>
                 <img class="photo" src="./06.jpg">
             </div>
             <div class="winner-info">
@@ -270,10 +349,13 @@
     <div class="slide theme7" data-type="award">
         <div class="title">暖女獎
            <p style="font-size: 24px; color:#99aacc;">表揚溫柔體貼的女同學：主動為同學解惑、</p> <p style="font-size: 24px; color:#99aacc;">熱心協助課業，並能洞察他人情緒，成為同學最可靠的心靈港灣。</p>
-</div>
+        </div>
         <div class="grid">
             <div class="img-stage">
                 <div class="mystery-mask"><i class="fa-solid fa-heart-pulse"></i><span>Warm Girl</span></div>
+                <div class="ray-glow"></div>
+                <div class="particles"></div>
+                <div class="shockwave"></div>
                 <img class="photo" src="./07.jpg">
             </div>
             <div class="winner-info">
@@ -288,8 +370,8 @@
 
     <div class="slide theme-intro" style="text-align:center;">
         <h1 style="font-size: 54px; color:#fbbf24; margin-bottom: 20px;">恭喜所有獲獎同學！</h1>
-        <h2  style="font-size: 32px; color:#BB3322;">每一份努力都值得被看見</h2>
-           <p style="font-size: 24px; color:#99aacc;">願 4D 班全體同學在未來的日子裡</p> <p style="font-size: 24px; color:#99aacc;">繼續發揚「勤儉忠信」的精神，攜手共創輝煌。</p>
+        <h2 style="font-size: 32px; color:#BB3322;">每一份努力都值得被看見</h2>
+        <p style="font-size: 24px; color:#99aacc;">願 4D 班全體同學在未來的日子裡</p> <p style="font-size: 24px; color:#99aacc;">繼續發揚「勤儉忠信」的精神，攜手共創輝煌。</p>
     </div>
 
 </div>
